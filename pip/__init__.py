@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from __future__ import absolute_import
+from __future__ import print_function
 
 import locale
 import logging
@@ -9,6 +10,13 @@ import warnings
 
 import sys
 import re
+import sys
+import subprocess
+
+# this must be done before loading any pip submodules as they read this var...
+# FIX: dw - avoid loss of venv python when pip fires off sub-pip processes...
+sys.executable = subprocess.check_output(['which', os.path.basename(sys.executable)]).decode().strip()
+print('# sys executable is {}'.format(sys.executable), file=sys.stderr)
 
 # 2016-06-17 barry@debian.org: urllib3 1.14 added optional support for socks,
 # but if invoked (i.e. imported), it will issue a warning to stderr if socks
@@ -43,8 +51,7 @@ import pip.cmdoptions
 cmdoptions = pip.cmdoptions
 
 # The version as used in the setup.py and the docs conf.py
-__version__ = "10.0.0.dev0"
-
+__version__ = "10.0.0.subpip_fix"
 
 logger = logging.getLogger(__name__)
 

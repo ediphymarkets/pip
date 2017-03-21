@@ -170,6 +170,13 @@ def open_for_csv(name, mode):
     return open(name, mode + bin, **nl)
 
 
+def executable_for_scripts():
+    ret = sys.executable
+    if '/' not in ret:
+        ret = '/usr/local/bin/'+ret
+    return ret
+
+
 def fix_script(path):
     """Replace #!python with #!/path/to/python
     Return True if file was changed."""
@@ -179,7 +186,7 @@ def fix_script(path):
             firstline = script.readline()
             if not firstline.startswith(b'#!python'):
                 return False
-            exename = sys.executable.encode(sys.getfilesystemencoding())
+            exename = executable_for_scripts().encode(sys.getfilesystemencoding())
             firstline = b'#!' + exename + os.linesep.encode("ascii")
             rest = script.read()
         with open(path, 'wb') as script:
